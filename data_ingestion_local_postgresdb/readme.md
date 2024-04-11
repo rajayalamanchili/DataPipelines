@@ -53,6 +53,19 @@ python ingest_nytaxi_data.py \
   --url=${URL}
 ```
 
+```bash
+URL = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-09.parquet"
+
+python ingest_nytaxi_data.py \
+  --user=root \
+  --password=root \
+  --host=localhost \
+  --port=5432 \
+  --db=ny_taxi \
+  --tb=yellow_taxi_trips \
+  --url=${URL}
+```
+
 Build the image
 
 ```bash

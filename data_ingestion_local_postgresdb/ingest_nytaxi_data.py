@@ -18,7 +18,7 @@ def main(params):
     file_name = url.rsplit('/', 1)[-1].strip()
     print(f'Downloading {file_name} ...')
     # Download file from url
-    os.system(f'wget {url.strip()} -N -o {file_name}')
+    os.system(f'curl {url.strip()} -L -o {file_name}')
     print('\n')
 
     # Create SQL engine
@@ -26,12 +26,8 @@ def main(params):
 
     # Read file based on csv or parquet
     if '.csv' in file_name:
-        if '.gz' in file_name:
-            df = pd.read_csv(file_name, nrows=10, compression='gzip')
-            df_iter = pd.read_csv(file_name, iterator=True, compression='gzip', chunksize=100000)
-        else:
-            df = pd.read_csv(file_name, nrows=10)
-            df_iter = pd.read_csv(file_name, iterator=True, chunksize=100000)
+        df = pd.read_csv(file_name, nrows=10)
+        df_iter = pd.read_csv(file_name, iterator=True, chunksize=100000)
     elif '.parquet' in file_name:
         file = pq.ParquetFile(file_name)
         df = next(file.iter_batches(batch_size=10)).to_pandas()
