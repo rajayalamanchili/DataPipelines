@@ -8,16 +8,22 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-2"
+  region = var.region
 }
 
-resource "aws_instance" "sample_ec2" {
+module "server_instance" {
+  source        = "./modules/ec2"
+  instance_name = "${var.app_name}-${var.env}-sample-server"
+}
 
-  ami           = "ami-0ddda618e961f2270"
-  instance_type = "t2.micro"
+module "mlflow_s3_bucket" {
+  source      = "./modules/s3"
+  bucket_name = "${var.app_name}-${var.env}-sample-bucket"
+}
 
+locals {
   tags = {
-    Name = "sample_server"
+    Name        = var.app_name
+    Environment = var.env
   }
-
 }
