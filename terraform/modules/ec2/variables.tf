@@ -12,3 +12,8 @@ variable "instance_name" {
   type    = string
   default = "sample-server"
 }
+
+variable "subnet_id" {
+  type = string
+  default = ""
+}

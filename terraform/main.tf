@@ -11,9 +11,15 @@ provider "aws" {
   region = var.region
 }
 
+module "vpc" {
+  source   = "./modules/vpc"
+  vpc_name = "${var.app_name}-${var.env}-vpc"
+}
+
 module "server_instance" {
   source        = "./modules/ec2"
   instance_name = "${var.app_name}-${var.env}-sample-server"
+  subnet_id = "${element(module.vpc.public_subnets, 0)}"
 }
 
 module "mlflow_s3_bucket" {
