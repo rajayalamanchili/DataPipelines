@@ -14,12 +14,15 @@ provider "aws" {
 module "vpc" {
   source   = "./modules/vpc"
   vpc_name = "${var.app_name}-${var.env}-vpc"
+
+  app_name = var.app_name
+  env      = var.env
 }
 
 module "server_instance" {
   source        = "./modules/ec2"
   instance_name = "${var.app_name}-${var.env}-sample-server"
-  subnet_id = "${element(module.vpc.public_subnets, 0)}"
+  subnet_id     = module.vpc.vpc_public_subnet_id[0]
 }
 
 module "mlflow_s3_bucket" {

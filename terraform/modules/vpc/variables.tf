@@ -1,3 +1,11 @@
+variable "env" {
+  type = string
+}
+
+variable "app_name" {
+  type = string
+}
+
 variable "vpc_name" {
   type    = string
   default = "sample_vpc"

@@ -14,6 +14,6 @@ variable "instance_name" {
 }
 
 variable "subnet_id" {
-  type = string
+  type    = string
   default = ""
 }
