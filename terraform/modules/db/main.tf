@@ -7,7 +7,7 @@ resource "aws_db_instance" "mlops-db" {
   skip_final_snapshot = true
   storage_encrypted   = true
 
-  db_subnet_group_name = aws_vpc.vpc.db_subnet_group_name
+  db_subnet_group_name = var.db_subnet_id
   db_name              = var.mlflow_db_name
   username             = var.db_username
   password             = random_password.db_password.result
@@ -35,6 +35,17 @@ resource "aws_ssm_parameter" "db_password" {
   }
 }
 
+resource "aws_ssm_parameter" "db_username" {
+  name  = "/${var.app_name}/${var.env}/DB_USERNAME"
+  type  = "SecureString"
+  value = var.db_username
+
+  tags = {
+    Name        = "${var.app_name}"
+    Environment = var.env
+  }
+}
+
 resource "aws_ssm_parameter" "db_url" {
   name  = "/${var.app_name}/${var.env}/DB_URL"
   type  = "SecureString"
@@ -46,14 +57,15 @@ resource "aws_ssm_parameter" "db_url" {
   }
 }
 
-resource "aws_security_group" "ingress_vpn" {
-  vpc_id = aws_vpc.vpc.id
+resource "aws_security_group" "rds_ec2" {
+  vpc_id = var.vpc_id
   name   = "/${var.app_name}/${var.env}-vpn-rds-sg"
 
-  ingress = {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    cidr_blocks     = ["0.0.0.0/0"]
+    security_groups = [var.ec2_securitygroup_id]
   }
 }

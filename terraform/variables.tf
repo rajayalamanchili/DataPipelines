@@ -13,3 +13,7 @@ variable "region" {
 variable "ec2_keypair_name" {
   default = "mlops-server-key"
 }
+
+variable "db_username" {
+  default = "mlopsuser"
+}
