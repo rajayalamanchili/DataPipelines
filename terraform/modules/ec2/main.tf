@@ -7,6 +7,7 @@ resource "aws_instance" "ec2_instance" {
 
   associate_public_ip_address = true
   key_name                    = var.key_pair_name
+  iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
 
   user_data = <<EOF
     #!/bin/bash
