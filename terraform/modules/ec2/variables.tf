@@ -13,7 +13,16 @@ variable "instance_name" {
   default = "sample-server"
 }
 
+variable "vpc_id" {
+  type    = string
+  default = ""
+}
+
 variable "subnet_id" {
   type    = string
   default = ""
+}
+
+variable "key_pair_name" {
+  type = string
 }

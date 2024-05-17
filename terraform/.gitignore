@@ -35,3 +35,5 @@ terraform.rc
 
 # Ignore lock files
 .terraform.lock.hcl
+
+*private-key

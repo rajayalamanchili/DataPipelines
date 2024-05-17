@@ -23,11 +23,16 @@ module "server_instance" {
   source        = "./modules/ec2"
   instance_name = "${var.app_name}-${var.env}-sample-server"
   subnet_id     = module.vpc.vpc_public_subnet_id[0]
+  vpc_id        = module.vpc.vpc_id
+  key_pair_name = var.ec2_keypair_name
 }
 
 module "mlflow_s3_bucket" {
   source      = "./modules/s3"
   bucket_name = "${var.app_name}-${var.env}-sample-bucket"
+
+  app_name = var.app_name
+  env      = var.env
 }
 
 locals {

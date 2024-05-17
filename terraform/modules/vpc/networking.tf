@@ -67,3 +67,28 @@ resource "aws_route_table_association" "public" {
   subnet_id = element(aws_subnet.public.*.id, count.index)
 
 }
+
+resource "aws_subnet" "db" {
+  vpc_id = aws_vpc.vpc.id
+
+  count             = length(var.database_subnet_range)
+  cidr_block        = element(var.database_subnet_range, count.index)
+  availability_zone = element(data.aws_availability_zones.available.names, count.index)
+
+  tags = {
+    Name        = "${var.app_name}-vpc"
+    Environment = var.env
+  }
+
+}
+
+resource "aws_db_subnet_group" "db-subnet-group" {
+  name       = "${var.app_name}-db-subnet-group"
+  subnet_ids = aws_subnet.db.*.id
+
+  tags = {
+    Name        = "${var.app_name}-vpc"
+    Environment = var.env
+  }
+
+}

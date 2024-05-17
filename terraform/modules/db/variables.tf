@@ -6,7 +6,11 @@ variable "app_name" {
   type = string
 }
 
-variable "bucket_name" {
+variable "db_username" {
+  type = string
+}
+
+variable "mlflow_db_name" {
   type    = string
-  default = "sample_bucket"
+  default = "mlflow_db"
 }

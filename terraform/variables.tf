@@ -3,9 +3,13 @@ variable "env" {
 }
 
 variable "app_name" {
-  default = "mlflow-terraform"
+  default = "mlops-training"
 }
 
 variable "region" {
   default = "us-east-2"
+}
+
+variable "ec2_keypair_name" {
+  default = "mlops-server-key"
 }
