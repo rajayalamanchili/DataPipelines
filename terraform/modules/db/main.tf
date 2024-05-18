@@ -2,15 +2,18 @@ resource "aws_db_instance" "mlops-db" {
   instance_class      = "db.t3.micro"
   identifier          = "${var.app_name}-${var.env}-db"
   engine              = "postgres"
-  engine_version      = "15.2"
+  engine_version      = "16.1"
   allocated_storage   = 10
   skip_final_snapshot = true
   storage_encrypted   = true
 
-  db_subnet_group_name = var.db_subnet_id
+  db_subnet_group_name = var.db_subnet_group_name
   db_name              = var.mlflow_db_name
   username             = var.db_username
   password             = random_password.db_password.result
+
+  vpc_security_group_ids = [aws_security_group.rds_ec2.id]
+
 
   tags = {
     Name        = "${var.app_name}"
@@ -59,7 +62,7 @@ resource "aws_ssm_parameter" "db_url" {
 
 resource "aws_security_group" "rds_ec2" {
   vpc_id = var.vpc_id
-  name   = "/${var.app_name}/${var.env}-vpn-rds-sg"
+  name   = "/${var.app_name}/${var.env}-ec2-rds-sg"
 
   ingress {
     from_port       = 5432
@@ -67,5 +70,12 @@ resource "aws_security_group" "rds_ec2" {
     protocol        = "tcp"
     cidr_blocks     = ["0.0.0.0/0"]
     security_groups = [var.ec2_securitygroup_id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }

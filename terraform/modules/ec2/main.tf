@@ -9,11 +9,7 @@ resource "aws_instance" "ec2_instance" {
   key_name                    = var.key_pair_name
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
 
-  user_data = <<EOF
-    #!/bin/bash
-    sudo yum update -y && sudo yum install python3-pip -y
-    pip3 install mlflow boto3 psycopg2-binary    
-    EOF
+  user_data = templatefile("${path.module}/user_data.sh", {samplevar = "hello"})
 
   tags = {
     Name = var.instance_name

@@ -82,7 +82,7 @@ resource "aws_subnet" "db" {
 
 }
 
-resource "aws_db_subnet_group" "db-subnet-group" {
+resource "aws_db_subnet_group" "db_subnet_group" {
   name       = "${var.app_name}-db-subnet-group"
   subnet_ids = aws_subnet.db.*.id
 

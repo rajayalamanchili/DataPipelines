@@ -23,6 +23,15 @@ resource "aws_iam_policy" "ec2_policy" {
         "Resource" : [
           "arn:aws:s3:::*"
         ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "rds-db:connect"
+        ],
+        "Resource" : [
+          "arn:aws:rds:*"
+        ]
       }
     ]
   })
