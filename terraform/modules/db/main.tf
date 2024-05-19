@@ -49,10 +49,11 @@ resource "aws_ssm_parameter" "db_username" {
   }
 }
 
+# password encoding needed for mlflow serve command to run
 resource "aws_ssm_parameter" "db_url" {
   name  = "/${var.app_name}/${var.env}/DB_URL"
   type  = "SecureString"
-  value = "postgresql://${aws_db_instance.mlops-db.username}:${random_password.db_password.result}@${aws_db_instance.mlops-db.address}:5432/${aws_db_instance.mlops-db.db_name}"
+  value = "postgresql://${aws_db_instance.mlops-db.username}:${urlencode(random_password.db_password.result)}@${aws_db_instance.mlops-db.address}:${var.db_port}/${aws_db_instance.mlops-db.db_name}"
 
   tags = {
     Name        = "${var.app_name}"
@@ -65,8 +66,8 @@ resource "aws_security_group" "rds_ec2" {
   name   = "/${var.app_name}/${var.env}-ec2-rds-sg"
 
   ingress {
-    from_port       = 5432
-    to_port         = 5432
+    from_port       = var.db_port
+    to_port         = var.db_port
     protocol        = "tcp"
     cidr_blocks     = ["0.0.0.0/0"]
     security_groups = [var.ec2_securitygroup_id]

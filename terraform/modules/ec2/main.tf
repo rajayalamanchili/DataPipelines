@@ -9,7 +9,7 @@ resource "aws_instance" "ec2_instance" {
   key_name                    = var.key_pair_name
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
 
-  user_data = templatefile("${path.module}/user_data.sh", {samplevar = "hello"})
+  user_data = templatefile("${path.module}/user_data.sh", { MLFLOW_ARTIFACT_URL_SSM_NAME = "${var.MLFLOW_ARTIFACT_URL_SSM_NAME}", MLFLOW_DB_URL_SSM_NAME = "${var.MLFLOW_DB_URL_SSM_NAME}" })
 
   tags = {
     Name = var.instance_name
@@ -47,8 +47,8 @@ resource "aws_security_group" "mlops-server-sg" {
     self             = false
     }, {
     description      = "Custom TCP"
-    from_port        = 5000
-    to_port          = 5000
+    from_port        = var.MLFLOW_PORT
+    to_port          = var.MLFLOW_PORT
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = []

@@ -26,3 +26,16 @@ variable "subnet_id" {
 variable "key_pair_name" {
   type = string
 }
+
+variable "MLFLOW_ARTIFACT_URL_SSM_NAME" {
+  type = string
+}
+
+variable "MLFLOW_DB_URL_SSM_NAME" {
+  type = string
+}
+
+variable "MLFLOW_PORT" {
+  type    = number
+  default = 5000
+}

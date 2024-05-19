@@ -40,7 +40,7 @@ terraform plan
 terraform apply
 terraform destroy
 
-4. connect to ec2 created by Terraform
+4a. connect to ec2 created by Terraform and start mlflow tracking server (manual)
 
 ssh -i <PRIVATE-KEY-FILENAME> <USERNAME>@<PUBLIC IP>
 
@@ -50,3 +50,5 @@ aws configure # you'll need to input your AWS credentials here
 mlflow server -h 0.0.0.0 -p 5000 --backend-store-uri postgresql://DB_USER:DB_PASSWORD@DB_ENDPOINT:5432/DB_NAME --default-artifact-root s3://S3_BUCKET_NAME
 
 http://<EC2_PUBLIC_DNS>:5000
+
+4b. start mlflow server with terraform on ec2 and output tracking url
