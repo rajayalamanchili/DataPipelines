@@ -28,6 +28,6 @@ resource "null_resource" "mlflow_image" {
 
 }
 
-output "ecr_repo_url" {
-  value = aws_ecr_repository.ecr_repo.repository_url
+output "ecr_repo_url_tag" {
+  value = "${aws_ecr_repository.ecr_repo.repository_url}:${var.ecr_image_tag}"
 }

@@ -11,5 +11,5 @@ RUN pip install \
 CMD mlflow server \
     --host 0.0.0.0 \
     --port 5000 \
-    --default-artifact-root ${BUCKET} \
-    --backend-store-uri postgresql://${DB_USER}:${DB_PASSWORD}@${DB_ENDPOINT}:5432/${DB_NAME}
+    --default-artifact-root ${MLFLOW_ARTIFACT_BUCKET} \
+    --backend-store-uri ${MLFLOW_BACKEND_DB_URL}

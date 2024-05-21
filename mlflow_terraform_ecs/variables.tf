@@ -9,3 +9,7 @@ variable "app_name" {
 variable "region" {
   default = "us-east-2"
 }
+
+variable "db_username" {
+  default = "mlopsuser"
+}
