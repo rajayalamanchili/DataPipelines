@@ -21,12 +21,12 @@ variable "ecs_lb_listener_port" {
 
 variable "ecs_service_cpus" {
   type    = number
-  default = 10
+  default = 256
 }
 
 variable "ecs_service_memory" {
   type    = number
-  default = 4096
+  default = 1024
 }
 
 variable "mlflow_s3_url_ssm_name" {
@@ -49,4 +49,12 @@ variable "log_rentention_days" {
 variable "mlflow_port" {
   type    = number
   default = 5000
+}
+
+variable "lb_security_group_id" {
+  type = string
+}
+
+variable "ecs_service_security_group_id" {
+  type = string
 }

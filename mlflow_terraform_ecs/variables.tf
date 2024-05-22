@@ -13,3 +13,8 @@ variable "region" {
 variable "db_username" {
   default = "mlopsuser"
 }
+
+variable "ecs_lb_listener_port" {
+  type    = number
+  default = 443
+}

@@ -53,6 +53,11 @@ resource "aws_ecs_task_definition" "ecs_task" {
     }
   }])
 
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "X86_64"
+  }
+
 }
 
 resource "aws_ecs_service" "ecs_service" {
@@ -65,7 +70,7 @@ resource "aws_ecs_service" "ecs_service" {
 
   network_configuration {
     subnets          = var.vpc_public_subnet_ids
-    security_groups  = []
+    security_groups  = [var.ecs_service_security_group_id]
     assign_public_ip = true
   }
 
@@ -76,27 +81,4 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   depends_on = [aws_lb.mlflow_lb]
-}
-
-resource "aws_security_group" "ecs_service_sg" {
-  name   = "${var.app_name}-${var.env}-ecs-service-sg"
-  vpc_id = var.vpc_id
-
-  ingress {
-    from_port       = var.ecs_lb_listener_port
-    to_port         = var.ecs_lb_listener_port
-    protocol        = "tcp"
-    security_groups = [aws_security_group.lb_sg.id]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-output "ecs_securitygroup_id" {
-  value = aws_security_group.ecs_service_sg.id
 }

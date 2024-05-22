@@ -1,24 +1,3 @@
-resource "aws_security_group" "lb_sg" {
-  name   = "${var.app_name}-${var.env}-ecs-lb"
-  vpc_id = var.vpc_id
-
-  ingress {
-    description = "load balancer ingress"
-    from_port   = var.ecs_lb_listener_port
-    to_port     = var.ecs_lb_listener_port
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    description     = "load balancer egress"
-    from_port       = 0
-    to_port         = 0
-    protocol        = "tcp"
-    cidr_blocks     = ["0.0.0.0/0"]
-    security_groups = [""] #to do
-  }
-}
-
 resource "aws_lb" "mlflow_lb" {
   name               = "${var.app_name}-${var.env}-ecs-lb"
   internal           = false
@@ -26,7 +5,7 @@ resource "aws_lb" "mlflow_lb" {
   load_balancer_type = "application"
   idle_timeout       = 60
 
-  security_groups = [aws_security_group.lb_sg.id]
+  security_groups = [var.lb_security_group_id]
   subnets         = var.vpc_public_subnet_ids
 }
 
