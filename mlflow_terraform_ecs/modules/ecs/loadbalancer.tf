@@ -26,6 +26,10 @@ resource "aws_lb_target_group" "mlflow_lb_target_grp" {
 
 resource "aws_lb_listener" "ecs_lb_listener" {
   load_balancer_arn = aws_lb.mlflow_lb.arn
+  port              = var.ecs_lb_listener_port
+  protocol          = "HTTPS"
+
+  depends_on = [aws_lb.mlflow_lb, aws_lb_target_group.mlflow_lb_target_grp]
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.mlflow_lb_target_grp.arn

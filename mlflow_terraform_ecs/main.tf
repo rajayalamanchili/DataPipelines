@@ -39,12 +39,11 @@ resource "aws_security_group" "lb_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
-    description     = "load balancer egress"
-    from_port       = 0
-    to_port         = 0
-    protocol        = "tcp"
-    cidr_blocks     = ["0.0.0.0/0"]
-    security_groups = [""] #to do
+    description = "load balancer egress"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 

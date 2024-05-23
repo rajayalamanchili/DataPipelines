@@ -12,7 +12,7 @@ resource "aws_db_instance" "mlops-db" {
   username             = var.db_username
   password             = random_password.db_password.result
 
-  vpc_security_group_ids = [aws_security_group.rds_ec2.id]
+  vpc_security_group_ids = [aws_security_group.rds.id]
 
 
   tags = {
@@ -61,9 +61,9 @@ resource "aws_ssm_parameter" "db_url" {
   }
 }
 
-resource "aws_security_group" "rds_ec2" {
+resource "aws_security_group" "rds" {
   vpc_id = var.vpc_id
-  name   = "/${var.app_name}/${var.env}-ec2-rds-sg"
+  name   = "/${var.app_name}/${var.env}-rds-sg"
 
   ingress {
     from_port       = var.db_port

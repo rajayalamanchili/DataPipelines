@@ -29,18 +29,18 @@ resource "aws_ecs_task_definition" "ecs_task" {
 
   container_definitions = jsonencode([{
     name      = "mlflow"
-    image     = "gcr.io/getindata-images-public/mlflow:1.24.0"
+    image     = var.mlflow_ecr_repo_url
     essential = true
 
     portMappings = [{ containerPort = var.mlflow_port }]
     secrets = [
       {
         name      = "MLFLOW_ARTIFACT_BUCKET"
-        valueFrom = ""
+        valueFrom = data.aws_secretsmanager_secret.mlflow_artifact_bucket.arn
       },
       {
         name      = "MLFLOW_BACKEND_DB_URL"
-        valueFrom = ""
+        valueFrom = data.aws_secretsmanager_secret.mlflow_artifact_bucket.arn
       }
     ]
     logConfiguration = {
