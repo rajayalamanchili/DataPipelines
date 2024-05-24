@@ -4,8 +4,16 @@ data "aws_secretsmanager_secret" "mlflow_artifact_bucket" {
   name = var.mlflow_s3_url_ssm_name
 }
 
+data "aws_secretsmanager_secret_version" "mlflow_artifact_bucket" {
+  secret_id = data.aws_secretsmanager_secret.mlflow_artifact_bucket.id
+}
+
 data "aws_secretsmanager_secret" "mlflow_backend_db_url" {
   name = var.mlflow_db_url_ssm_name
+}
+
+data "aws_secretsmanager_secret_version" "mlflow_backend_db_url" {
+  secret_id = data.aws_secretsmanager_secret.mlflow_backend_db_url.id
 }
 
 resource "aws_cloudwatch_log_group" "mlflow_log_grp" {
@@ -33,16 +41,16 @@ resource "aws_ecs_task_definition" "ecs_task" {
     essential = true
 
     portMappings = [{ containerPort = var.mlflow_port }]
-    secrets = [
-      {
-        name      = "MLFLOW_ARTIFACT_BUCKET"
-        valueFrom = data.aws_secretsmanager_secret.mlflow_artifact_bucket.arn
-      },
-      {
-        name      = "MLFLOW_BACKEND_DB_URL"
-        valueFrom = data.aws_secretsmanager_secret.mlflow_artifact_bucket.arn
-      }
-    ]
+    # secrets = [
+    #   {
+    #     name      = "MLFLOW_ARTIFACT_BUCKET"
+    #     valueFrom = data.aws_secretsmanager_secret_version.mlflow_artifact_bucket.secret_string
+    #   },
+    #   {
+    #     name      = "MLFLOW_BACKEND_DB_URL"
+    #     valueFrom = data.aws_secretsmanager_secret_version.mlflow_backend_db_url.secret_string
+    #   }
+    # ]
     logConfiguration = {
       logDriver = "awslogs"
       options = {

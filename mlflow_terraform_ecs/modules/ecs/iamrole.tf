@@ -13,6 +13,7 @@ resource "aws_iam_policy" "ecs_ssm" {
       {
         Action = [
           "ssm:GetParameter*",
+          "secretsmanager:GetSecretValue"
         ]
         Effect   = "Allow"
         Resource = "arn:aws:ssm:*:*:*"
@@ -55,7 +56,8 @@ resource "aws_iam_role" "ecs_task" {
   name = "${var.app_name}-${var.env}-ecs-task"
 
   managed_policy_arns = [
-    aws_iam_policy.ecs_ssm.arn
+    aws_iam_policy.ecs_ssm.arn,
+    aws_iam_policy.s3_rds.arn
   ]
 
   assume_role_policy = jsonencode({
@@ -79,7 +81,8 @@ resource "aws_iam_role" "ecs_execution" {
   managed_policy_arns = [
     data.aws_iam_policy.cloud_watch.arn,
     data.aws_iam_policy.ecs_task_execution.arn,
-    aws_iam_policy.s3_rds.arn
+    aws_iam_policy.s3_rds.arn,
+    aws_iam_policy.ecs_ssm.arn
   ]
 
   assume_role_policy = jsonencode({
