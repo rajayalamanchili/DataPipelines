@@ -98,7 +98,7 @@ module "ecs" {
 
   mlflow_ecr_repo_url = module.ecr_repo.ecr_repo_url_tag
 
-  depends_on = [module.mlflow_db_backend.mlflow_db_url_ssm_name, module.mlflow_s3_bucket.mlflow_artifact_url_ssm_name, module.ecr_repo.ecr_repo_url_tag, module.vpc]
+  # depends_on = [module.mlflow_db_backend.mlflow_db_url_ssm_name, module.mlflow_s3_bucket.mlflow_artifact_url_ssm_name, module.ecr_repo.ecr_repo_url_tag, module.vpc]
 
 }
 

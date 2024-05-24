@@ -1,20 +1,13 @@
 data "aws_region" "current" {}
 
-data "aws_secretsmanager_secret" "mlflow_artifact_bucket" {
+data "aws_ssm_parameter" "mlflow_artifact_bucket" {
   name = var.mlflow_s3_url_ssm_name
 }
 
-data "aws_secretsmanager_secret_version" "mlflow_artifact_bucket" {
-  secret_id = data.aws_secretsmanager_secret.mlflow_artifact_bucket.id
-}
-
-data "aws_secretsmanager_secret" "mlflow_backend_db_url" {
+data "aws_ssm_parameter" "mlflow_backend_db_url" {
   name = var.mlflow_db_url_ssm_name
 }
 
-data "aws_secretsmanager_secret_version" "mlflow_backend_db_url" {
-  secret_id = data.aws_secretsmanager_secret.mlflow_backend_db_url.id
-}
 
 resource "aws_cloudwatch_log_group" "mlflow_log_grp" {
   name              = "/ecs/${var.app_name}/${var.env}"
@@ -41,16 +34,16 @@ resource "aws_ecs_task_definition" "ecs_task" {
     essential = true
 
     portMappings = [{ containerPort = var.mlflow_port }]
-    # secrets = [
-    #   {
-    #     name      = "MLFLOW_ARTIFACT_BUCKET"
-    #     valueFrom = data.aws_secretsmanager_secret_version.mlflow_artifact_bucket.secret_string
-    #   },
-    #   {
-    #     name      = "MLFLOW_BACKEND_DB_URL"
-    #     valueFrom = data.aws_secretsmanager_secret_version.mlflow_backend_db_url.secret_string
-    #   }
-    # ]
+    secrets = [
+      {
+        name      = "MLFLOW_ARTIFACT_BUCKET"
+        valueFrom = data.aws_ssm_parameter.mlflow_artifact_bucket.arn
+      },
+      {
+        name      = "MLFLOW_BACKEND_DB_URL"
+        valueFrom = data.aws_ssm_parameter.mlflow_backend_db_url.arn
+      }
+    ]
     logConfiguration = {
       logDriver = "awslogs"
       options = {
@@ -85,7 +78,7 @@ resource "aws_ecs_service" "ecs_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.mlflow_lb_target_grp.arn
     container_name   = "mlflow"
-    container_port   = 8080
+    container_port   = var.mlflow_port
   }
 
   depends_on = [aws_lb.mlflow_lb]

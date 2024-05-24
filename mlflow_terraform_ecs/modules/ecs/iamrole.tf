@@ -12,8 +12,7 @@ resource "aws_iam_policy" "ecs_ssm" {
     Statement = [
       {
         Action = [
-          "ssm:GetParameter*",
-          "secretsmanager:GetSecretValue"
+          "ssm:GetParameter*"
         ]
         Effect   = "Allow"
         Resource = "arn:aws:ssm:*:*:*"
