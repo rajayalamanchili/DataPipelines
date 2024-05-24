@@ -2,11 +2,9 @@ FROM python:3.12.3
 
 RUN pip install -U pip
 
-RUN pip install \
-    mlflow \
-    psycopg2-binary \
-    boto3 & \
-    mkdir /mlflow/
+RUN pip install mlflow psycopg2-binary boto3
+    
+RUN mkdir /mlflow/
 
 CMD mlflow server \
     --host 0.0.0.0 \
