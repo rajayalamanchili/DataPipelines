@@ -108,3 +108,6 @@ module "ecs" {
 
 }
 
+output "lb_public_dns" {
+  value = module.ecs.ecs_lb_dns
+}

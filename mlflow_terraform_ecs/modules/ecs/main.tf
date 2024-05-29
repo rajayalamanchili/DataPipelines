@@ -83,3 +83,7 @@ resource "aws_ecs_service" "ecs_service" {
 
   depends_on = [aws_lb.mlflow_lb]
 }
+
+output "ecs_lb_dns" {
+  value = aws_lb.mlflow_lb.dns_name
+}
