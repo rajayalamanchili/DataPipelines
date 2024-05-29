@@ -20,7 +20,7 @@ resource "aws_lb_target_group" "mlflow_lb_target_grp" {
   health_check {
     protocol = "HTTP"
     matcher  = "200-202"
-    path     = "/ping"
+    path     = "/"
   }
 }
 

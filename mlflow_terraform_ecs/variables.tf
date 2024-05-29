@@ -16,5 +16,10 @@ variable "db_username" {
 
 variable "ecs_lb_listener_port" {
   type    = number
-  default = 443
+  default = 80
+}
+
+variable "mlflow_port" {
+  type    = number
+  default = 5000
 }

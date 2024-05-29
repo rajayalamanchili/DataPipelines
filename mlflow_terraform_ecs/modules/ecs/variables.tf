@@ -16,7 +16,7 @@ variable "vpc_public_subnet_ids" {
 
 variable "ecs_lb_listener_port" {
   type    = number
-  default = 443
+  default = 80
 }
 
 variable "ecs_service_cpus" {

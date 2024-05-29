@@ -31,20 +31,24 @@ resource "aws_security_group" "lb_sg" {
   name   = "${var.app_name}-${var.env}-ecs-lb"
   vpc_id = module.vpc.vpc_id
 
-  ingress {
-    description = "load balancer ingress"
-    from_port   = var.ecs_lb_listener_port
-    to_port     = var.ecs_lb_listener_port
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    description = "load balancer egress"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+}
+
+resource "aws_security_group_rule" "lb_sg_ingress" {
+  type              = "ingress"
+  from_port         = var.ecs_lb_listener_port
+  to_port           = var.ecs_lb_listener_port
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.lb_sg.id
+}
+
+resource "aws_security_group_rule" "lb_sg_egress" {
+  type                     = "egress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "tcp"
+  cidr_blocks              = ["0.0.0.0/0"]
+  security_group_id        = aws_security_group.lb_sg.id
 }
 
 resource "aws_security_group" "ecs_service_sg" {
@@ -52,10 +56,10 @@ resource "aws_security_group" "ecs_service_sg" {
   vpc_id = module.vpc.vpc_id
 
   ingress {
-    from_port       = var.ecs_lb_listener_port
-    to_port         = var.ecs_lb_listener_port
+    from_port       = var.mlflow_port
+    to_port         = var.mlflow_port
     protocol        = "tcp"
-    security_groups = [aws_security_group.lb_sg.id]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -90,6 +94,8 @@ module "ecs" {
   vpc_public_subnet_ids = module.vpc.vpc_public_subnet_ids
 
   ecs_lb_listener_port          = var.ecs_lb_listener_port
+  mlflow_port = var.mlflow_port
+
   lb_security_group_id          = aws_security_group.lb_sg.id
   ecs_service_security_group_id = aws_security_group.ecs_service_sg.id
 
@@ -98,7 +104,7 @@ module "ecs" {
 
   mlflow_ecr_repo_url = module.ecr_repo.ecr_repo_url_tag
 
-  # depends_on = [module.mlflow_db_backend.mlflow_db_url_ssm_name, module.mlflow_s3_bucket.mlflow_artifact_url_ssm_name, module.ecr_repo.ecr_repo_url_tag, module.vpc]
+  depends_on = [module.mlflow_db_backend.mlflow_db_url_ssm_name, module.mlflow_s3_bucket.mlflow_artifact_url_ssm_name, module.ecr_repo.ecr_repo_url_tag]
 
 }
 
